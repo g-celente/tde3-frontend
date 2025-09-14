@@ -5,23 +5,30 @@ import { nonConformityService } from '../services';
 
 interface NonConformity {
   id: string;
-  status: 'OPEN' | 'IN_PROGRESS' | 'CLOSED';
-  checklistId: string;
-  questionId: string;
+  status: 'OPEN' | 'IN_PROGRESS' | 'RESOLVED';
   description: string | null;
   observation: string | null;
+  resolvedAt: string | null;
   createdAt: string;
   updatedAt: string;
   question?: {
     id: string;
     text: string;
   };
+  checklist?: {
+    id: string;
+    standard: string;
+    document: {
+      id: string;
+      fileName: string;
+    };
+  };
 }
 
 const statusOptions = [
   { value: 'OPEN', label: 'Pendente' },
   { value: 'IN_PROGRESS', label: 'Em Andamento' },
-  { value: 'CLOSED', label: 'Resolvido' }
+  { value: 'RESOLVED', label: 'Resolvido' }
 ];
 
 const NonConformityAction = () => {
@@ -30,7 +37,7 @@ const NonConformityAction = () => {
   const [nonConformity, setNonConformity] = useState<NonConformity | null>(null);
   const [description, setDescription] = useState('');
   const [observation, setObservation] = useState('');
-  const [status, setStatus] = useState<'OPEN' | 'IN_PROGRESS' | 'CLOSED'>('OPEN');
+  const [status, setStatus] = useState<'OPEN' | 'IN_PROGRESS' | 'RESOLVED'>('OPEN');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -82,14 +89,14 @@ const NonConformityAction = () => {
 
       setSuccess('Ação corretiva salva com sucesso!');
 
-      // Redirecionar de volta para a lista após um breve momento
+      // Redireciona para a lista de não conformidades
       setTimeout(() => {
-        if (nonConformity?.checklistId) {
-          navigate(`/nonconformities/${nonConformity.checklistId}`, { 
-            state: { success: 'Ação corretiva salva com sucesso!' } 
+        if (nonConformity?.checklist?.id) {
+          navigate(`/nonconformities/checklist/${nonConformity.checklist.id}`, { 
+            replace: true 
           });
         } else {
-          navigate('/checklists');
+          navigate('/nonconformities', { replace: true });
         }
       }, 1500);
     } catch (err: any) {
@@ -163,7 +170,7 @@ const NonConformityAction = () => {
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       value={option.value}
                       checked={status === option.value}
-                      onChange={() => setStatus(option.value as 'OPEN' | 'IN_PROGRESS' | 'CLOSED')}
+                      onChange={() => setStatus(option.value as 'OPEN' | 'IN_PROGRESS' | 'RESOLVED')}
                     />
                     <span className="ml-2 text-gray-700">{option.label}</span>
                   </label>
@@ -202,9 +209,13 @@ const NonConformityAction = () => {
 
           <div className="px-6 py-4 bg-gray-50 flex justify-end space-x-3 border-t">
             <Button
+              variant="secondary"
+              size="sm"
               type="button"
-              variant="outline"
-              onClick={() => navigate(`/nonconformities/${nonConformity.checklistId}`)}
+              onClick={() => nonConformity?.checklist?.id 
+                ? navigate(`/nonconformities/checklist/${nonConformity.checklist.id}`)
+                : navigate('/nonconformities')
+              }
               disabled={submitting}
             >
               Cancelar

@@ -243,11 +243,11 @@ const NonConformityDetail: React.FC = () => {
           className="mb-8"
         >
           <button
-            onClick={() => navigate('/nonconformities')}
+            onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-gray-300 hover:text-white mb-4 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            Voltar para Não Conformidades
+            Voltar
           </button>
 
           <div className="flex items-center justify-between">

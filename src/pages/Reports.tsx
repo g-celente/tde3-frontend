@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Alert, Button, Card } from '../components/ui';
-import { checklistService, reportService } from '../services';
+import { reportService } from '../services';
 
 interface ChecklistSummary {
   id: string;
