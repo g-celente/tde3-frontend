@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api'; // Altere para a URL da sua API quando disponível
+const API_URL = 'https://tde3-backend.vercel.app/api'; // Altere para a URL da sua API quando disponível
 
 const api = axios.create({
   baseURL: API_URL,
